@@ -1,0 +1,13 @@
+{
+    "IGUI_FishingSpotInfo_Menu": "낚시터 정보",
+    "IGUI_FishingSpotInfo_Title": "낚시터 %1, %2",
+    "IGUI_FishingSpotInfo_Fish": "여기 물고기 수: %1 (입질 확률 x%2)",
+    "IGUI_FishingSpotInfo_NoArea": "이 근처에서 아직 잡은 물고기 없음",
+    "IGUI_FishingSpotInfo_Caught": "이 구역에서 잡은 수: %1 (%2,%3 - %4,%5)",
+    "IGUI_FishingSpotInfo_Full": "구역이 가득 찬 상태",
+    "IGUI_FishingSpotInfo_RecoverIn": "여기서 안 잡으면 %1 뒤 회복",
+    "IGUI_FishingSpotInfo_RecoverReady": "회복됨: 누가 여기서 다시 낚시하면 0으로 리셋",
+    "IGUI_FishingSpotInfo_Note": "물고기 떼는 매일 옮겨 가고, 잡은 수는 구역에 남습니다.",
+    "IGUI_FishingSpotInfo_DaysHours": "%1일 %2시간",
+    "IGUI_FishingSpotInfo_HoursMinutes": "%1시간 %2분"
+}

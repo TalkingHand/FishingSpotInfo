@@ -1,0 +1,8 @@
+name=Fishing Spot Info
+id=FishingSpotInfo
+description=Right-click water to see how many fish are there, how many were caught in that area, and when it restocks. Read only.
+poster=poster.png
+author=TalkingHand
+url=https://github.com/TalkingHand/FishingSpotInfo
+modversion=1.0.0
+versionMin=42.0

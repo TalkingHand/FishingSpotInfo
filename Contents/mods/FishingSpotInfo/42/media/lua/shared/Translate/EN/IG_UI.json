@@ -1,0 +1,13 @@
+{
+    "IGUI_FishingSpotInfo_Menu": "Fishing spot info",
+    "IGUI_FishingSpotInfo_Title": "Fishing spot %1, %2",
+    "IGUI_FishingSpotInfo_Fish": "Fish here: %1 (bite chance x%2)",
+    "IGUI_FishingSpotInfo_NoArea": "Nothing caught around here yet",
+    "IGUI_FishingSpotInfo_Caught": "Caught in this area: %1 (%2,%3 - %4,%5)",
+    "IGUI_FishingSpotInfo_Full": "Area is fully stocked",
+    "IGUI_FishingSpotInfo_RecoverIn": "Restocks in %1 if you stop catching here",
+    "IGUI_FishingSpotInfo_RecoverReady": "Restocked: resets when someone fishes here again",
+    "IGUI_FishingSpotInfo_Note": "Fish schools move every day; the catch count stays with the area.",
+    "IGUI_FishingSpotInfo_DaysHours": "%1 d %2 h",
+    "IGUI_FishingSpotInfo_HoursMinutes": "%1 h %2 min"
+}
