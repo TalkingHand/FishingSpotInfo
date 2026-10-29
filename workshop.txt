@@ -1,4 +1,5 @@
 version=1
+id=3829682476
 title=Fishing Spot Info
 description=[h1]Fishing Spot Info[/h1]
 description=In Build 42 every fish you catch makes that stretch of water poorer. The game keeps a hidden catch count for a 40x40 area around the spot, and the bite chance drops with it. This mod shows you that count, how many fish are left and when the area restocks.

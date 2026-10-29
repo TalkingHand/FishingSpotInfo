@@ -27,7 +27,7 @@ from existing saves. Client-side; not tested on a multiplayer server.
 
 ## Install
 
-- Steam Workshop: link follows after the first upload.
+- Subscribe on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3829682476) (ID `3829682476`) and enable it in the mod list.
 - Manual: copy `Contents/mods/FishingSpotInfo` into `%USERPROFILE%\Zomboid\mods\`.
 
 ## Tests
