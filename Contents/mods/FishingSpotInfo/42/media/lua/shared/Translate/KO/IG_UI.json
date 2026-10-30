@@ -9,5 +9,8 @@
     "IGUI_FishingSpotInfo_RecoverReady": "회복됨: 누가 여기서 다시 낚시하면 0으로 리셋",
     "IGUI_FishingSpotInfo_Note": "물고기 떼는 매일 옮겨 가고, 잡은 수는 구역에 남습니다.",
     "IGUI_FishingSpotInfo_DaysHours": "%1일 %2시간",
-    "IGUI_FishingSpotInfo_HoursMinutes": "%1시간 %2분"
+    "IGUI_FishingSpotInfo_HoursMinutes": "%1시간 %2분",
+    "IGUI_FishingSpotInfo_TimeBonus": "시각 %1: 새벽/저녁 입질 보너스 x%2, %3 뒤 끝남",
+    "IGUI_FishingSpotInfo_TimeNormal": "시각 %1: 입질 확률 x%2, 새벽/저녁 보너스까지 %3",
+    "IGUI_FishingSpotInfo_TimeHours": "보너스 시간: 04:00-07:00, 18:00-21:00 (입질 x1.2)"
 }

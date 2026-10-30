@@ -5,6 +5,8 @@
 --     (Fishing.Utils.getFishNumParams, shared/Fishing/FishingUtils.lua:255)
 --   - how many fish were caught in the fishing area around it
 --   - when that area recovers
+--   - the time-of-day bite multiplier now, and when it changes next
+--     (Fishing.Utils.getTimeParams: x1.2 from 04:00 to 06:59 and 18:00 to 20:59)
 --
 -- How vanilla depletes and recovers (zombie.iso.FishSchoolManager, 42.21):
 --   - The first catch registers a 40x40 metagrid zone of type "Fishing"
@@ -22,6 +24,10 @@ FishingSpotInfo = FishingSpotInfo or {}
 
 -- FishSchoolManager.updateFishingData: getLastActionTimestamp() + 7200
 FishingSpotInfo.RESET_MINUTES = 7200
+
+-- Fishing.Utils.getTimeParams: x1.2 when the hour is 4-6 or 18-20; as {start, end} in
+-- minutes of the day, end exclusive
+FishingSpotInfo.BONUS_TIMES = { { 4 * 60, 7 * 60 }, { 18 * 60, 21 * 60 } }
 
 -- Same clock as FishSchoolManager.getCurrentGameTimeInMinutes
 function FishingSpotInfo.nowMinutes()
@@ -45,10 +51,32 @@ function FishingSpotInfo.isWater(square)
     return floor ~= nil and floor:hasProperty(IsoFlagType.water)
 end
 
+-- Time of day: the vanilla multiplier now, and minutes until the bonus starts or ends
+function FishingSpotInfo.timeInfo()
+    local params = Fishing.Utils.getTimeParams()
+    local minute = math.floor(getGameTime():getTimeOfDay() * 60) % 1440
+    local info = { minute = minute, coeff = params.coeff, bonus = false }
+    for _, range in ipairs(FishingSpotInfo.BONUS_TIMES) do
+        if minute >= range[1] and minute < range[2] then
+            info.bonus = true
+            info.minutesLeft = range[2] - minute
+        end
+    end
+    if not info.bonus then
+        for _, range in ipairs(FishingSpotInfo.BONUS_TIMES) do
+            -- Kahlua's % keeps the sign of the left side
+            local wait = range[1] - minute
+            if wait < 0 then wait = wait + 1440 end
+            if not info.minutesLeft or wait < info.minutesLeft then info.minutesLeft = wait end
+        end
+    end
+    return info
+end
+
 -- Everything the window shows, as numbers (tests read this too)
 function FishingSpotInfo.query(x, y)
     local params = Fishing.Utils.getFishNumParams(x, y)
-    local info = { x = x, y = y, fish = params.value, coeff = params.coeff }
+    local info = { x = x, y = y, fish = params.value, coeff = params.coeff, time = FishingSpotInfo.timeInfo() }
     local zone = FishingSpotInfo.getZone(x, y)
     if zone then
         info.caught = tonumber(zone:getName()) or 0
@@ -86,6 +114,14 @@ function FishingSpotInfo.lines(info)
             table.insert(lines, getText("IGUI_FishingSpotInfo_RecoverReady"))
         end
     end
+    local time = info.time
+    local clock = string.format("%02d:%02d", math.floor(time.minute / 60), time.minute % 60)
+    if time.bonus then
+        table.insert(lines, getText("IGUI_FishingSpotInfo_TimeBonus", clock, time.coeff, formatMinutes(time.minutesLeft)))
+    else
+        table.insert(lines, getText("IGUI_FishingSpotInfo_TimeNormal", clock, time.coeff, formatMinutes(time.minutesLeft)))
+    end
+    table.insert(lines, getText("IGUI_FishingSpotInfo_TimeHours"))
     table.insert(lines, getText("IGUI_FishingSpotInfo_Note"))
     return lines
 end

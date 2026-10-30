@@ -10,6 +10,7 @@ description=[list]
 description=[*][b]Fish here[/b]: the number the game uses for the bite chance, and the bite multiplier it gives (x0.1 with no fish, x0.5 below 10, x1.0 up to 25, x1.5 above).
 description=[*][b]Caught in this area[/b]: fish caught in the 40x40 area around this spot, and the area's corners.
 description=[*][b]Restocks in[/b]: the area resets after 5 in-game days without a catch there. Every catch restarts the timer.
+description=[*][b]Time[/b]: the time-of-day bite multiplier now and when it changes. Bites are x1.2 from 04:00 to 07:00 and from 18:00 to 21:00, and nibbles come sooner. Weather and temperature also matter; the mod doesn't show those.
 description=[/list]
 description=While the window is open, the tile is highlighted and the area's border is drawn on the ground: [b]green[/b] when the area is fully stocked, [b]orange[/b] when it has been fished. Close the window with X; right-click another water tile to move it there.
 description=
@@ -24,7 +25,7 @@ description=[h2]Compatibility[/h2]
 description=Read only: it never changes fishing, catches or the area counts. No vanilla files replaced. Safe to add to or remove from existing saves. Client-side; in multiplayer it shows what your client knows and has not been tested on a server.
 description=
 description=[h2]한국어[/h2]
-description=Build 42에서는 물고기를 잡을수록 그 물가의 입질이 줄어듭니다. 게임은 잡은 자리 주변 40x40 구역마다 잡은 수를 몰래 세고, 그만큼 물고기 수와 입질 확률이 떨어집니다. 물 타일을 우클릭하고 [b]낚시터 정보[/b]를 고르면 그 칸의 물고기 수와 입질 배율, 그 구역에서 잡은 수, 회복까지 남은 시간(마지막으로 잡은 뒤 게임 시간 5일)이 창에 나옵니다. 창이 열려 있는 동안 바닥에 칸과 구역 테두리가 표시됩니다(초록 = 가득 참, 주황 = 줄어듦). 물고기 떼는 매일 옮겨 가지만 잡은 수는 구역에 남으니, 주황 테두리 밖으로 옮기면 됩니다. 조회만 하고 낚시 값은 바꾸지 않습니다. 기존 세이브에 넣고 빼도 됩니다.
+description=Build 42에서는 물고기를 잡을수록 그 물가의 입질이 줄어듭니다. 게임은 잡은 자리 주변 40x40 구역마다 잡은 수를 몰래 세고, 그만큼 물고기 수와 입질 확률이 떨어집니다. 물 타일을 우클릭하고 [b]낚시터 정보[/b]를 고르면 그 칸의 물고기 수와 입질 배율, 그 구역에서 잡은 수, 회복까지 남은 시간(마지막으로 잡은 뒤 게임 시간 5일), 시간대 입질 보너스(04:00-07:00, 18:00-21:00에 x1.2)가 지금 붙는지와 언제 바뀌는지가 창에 나옵니다. 창이 열려 있는 동안 바닥에 칸과 구역 테두리가 표시됩니다(초록 = 가득 참, 주황 = 줄어듦). 물고기 떼는 매일 옮겨 가지만 잡은 수는 구역에 남으니, 주황 테두리 밖으로 옮기면 됩니다. 조회만 하고 낚시 값은 바꾸지 않습니다. 기존 세이브에 넣고 빼도 됩니다.
 description=
 description=Source: https://github.com/TalkingHand/FishingSpotInfo
 tags=Build 42;Interface

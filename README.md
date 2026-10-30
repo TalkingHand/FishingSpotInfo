@@ -6,6 +6,10 @@ Project Zomboid Build 42 mod. Right-click any water tile and choose **Fishing sp
   multiplier (x0.1 with no fish, x0.5 below 10, x1.0 up to 25, x1.5 above)
 - **Caught in this area**: fish caught in the 40x40 area around the spot, and the area's corners
 - **Restocks in**: time until the area resets (5 in-game days after the last catch there)
+- **Time**: the time-of-day bite multiplier now and when it changes. Bites are x1.2 from 04:00 to
+  07:00 and from 18:00 to 21:00 (`Fishing.Utils.getTimeParams`); this bonus also shortens the wait
+  between nibbles (`Bobber:getNibbleTime`). Weather and temperature also change bites; the mod
+  doesn't show those.
 
 While the window is open, the tile is highlighted and the area's border is drawn on the ground:
 green when the area is fully stocked, orange when it has been fished.
@@ -34,7 +38,7 @@ from existing saves. Client-side; not tested on a multiplayer server.
 
 In-game tests use PZTestHarness (`pzt.conf`, `tests/`; the save is a local copy, not in this repository):
 
-- `pzt run`: query values against vanilla, a catch, the 5-day reset, the menu hook on water and
+- `pzt run`: query values against vanilla, the time-of-day bonus at every hour, a catch, the 5-day reset, the menu hook on water and
   land, the window, the ground border.
 - `bash tests/tools/uitest.sh`: the same plus real mouse clicks (right-click land and water,
   left-click the option). The mouse cursor moves for a moment.

@@ -3,7 +3,8 @@
 -- FishingSpotInfoTest.start() and FishingSpotInfoTest.poll().
 --   1. find a shore: a water tile with land 2 tiles south-east, near one of the candidate spots
 --      (teleport, scan the loaded cell); the player then stands on that land
---   2. query: fish number and multiplier match Fishing.Utils.getFishNumParams
+--   2. query: fish number and multiplier match Fishing.Utils.getFishNumParams; the time-of-day
+--      bonus matches Fishing.Utils.getTimeParams at every hour, and the next change is a bonus edge
 --   3. a catch (FishSchoolManager:catchFish, the call Fish.lua:247 makes) creates or bumps the
 --      40x40 "Fishing" area: caught +1, restock time about 5 days
 --   4. vanilla restock: with the last catch stamped 5 days back, updateFishingData sets the
@@ -133,14 +134,41 @@ local function hasOption(names)
     return false
 end
 
+-- 2: time of day at hh:30 for every hour, against Fishing.Utils.getTimeParams
+local function testTime()
+    local gt = getGameTime()
+    local saved = gt:getTimeOfDay()
+    local bad = {}
+    for h = 0, 23 do
+        gt:setTimeOfDay(h + 0.5)
+        local t = FishingSpotInfo.timeInfo()
+        local vanillaBonus = Fishing.Utils.getTimeParams().coeff > 1
+        local nextChange = (t.minute + t.minutesLeft) % 1440
+        local edges = { [240] = true, [420] = true, [1080] = true, [1260] = true }
+        if t.minute ~= h * 60 + 30 or t.bonus ~= vanillaBonus or not edges[nextChange]
+                or t.minutesLeft <= 0 or t.minutesLeft > 660 then
+            bad[#bad + 1] = h .. ":" .. tostring(t.bonus) .. "/" .. tostring(vanillaBonus) .. "/" .. nextChange .. "/" .. t.minutesLeft
+        end
+        if h == 5 or h == 12 then
+            for _, line in ipairs(FishingSpotInfo.lines(FishingSpotInfo.query(T.water0:getX(), T.water0:getY()))) do
+                log("line", h .. ":30", line)
+            end
+        end
+    end
+    gt:setTimeOfDay(saved)
+    check("2 time bonus = vanilla for 24 hours", #bad == 0, table.concat(bad, " "))
+end
+
 local function testQuery(sq)
     local x, y = sq:getX(), sq:getY()
+    T.water0 = sq
     local info = FishingSpotInfo.query(x, y)
     local params = Fishing.Utils.getFishNumParams(x, y)
     log("water", x, y, "fish", info.fish, "coeff", info.coeff, "caught", tostring(info.caught))
     check("2 query fish = vanilla", info.fish == params.value and info.coeff == params.coeff,
         info.fish .. "/" .. params.value)
     for _, line in ipairs(FishingSpotInfo.lines(info)) do log("line", line) end
+    testTime()
 
     local before = info.caught or 0
     FishSchoolManager.getInstance():catchFish(x, y)

@@ -9,5 +9,8 @@
     "IGUI_FishingSpotInfo_RecoverReady": "Restocked: resets when someone fishes here again",
     "IGUI_FishingSpotInfo_Note": "Fish schools move every day; the catch count stays with the area.",
     "IGUI_FishingSpotInfo_DaysHours": "%1 d %2 h",
-    "IGUI_FishingSpotInfo_HoursMinutes": "%1 h %2 min"
+    "IGUI_FishingSpotInfo_HoursMinutes": "%1 h %2 min",
+    "IGUI_FishingSpotInfo_TimeBonus": "Time %1: dawn/dusk bite bonus x%2, ends in %3",
+    "IGUI_FishingSpotInfo_TimeNormal": "Time %1: bite chance x%2, dawn/dusk bonus starts in %3",
+    "IGUI_FishingSpotInfo_TimeHours": "Bonus hours: 04:00-07:00 and 18:00-21:00 (bites x1.2)"
 }

@@ -1,9 +1,10 @@
 # FishingSpotInfo: vanilla dependencies (format: _guide/README.md "바닐라 의존 목록")
-# checked: 42.21.0 (pzt run + real-click test, 2026-10-30)
+# checked: 42.21.0 (pzt run + real-click test, 2026-10-30; time-of-day lines pzt run 2026-10-31)
 #
 # kind	target	note
 
 lua-call	Fishing.Utils.getFishNumParams(x, y)	shared/Fishing/FishingUtils.lua:255. Fish number and its bite multiplier (0 -> 0.1, <10 -> 0.5, <=25 -> 1.0, else 1.5)
+lua-call	Fishing.Utils.getTimeParams()	shared/Fishing/FishingUtils.lua:234. Time-of-day bite multiplier now (x1.2 at hours 4-6 and 18-20, else 1)
 lua-call	ISPanel / ISButton	window
 event	Events.OnFillWorldObjectContextMenu	adds the menu option on water
 
@@ -14,10 +15,13 @@ java-call	getGameTime():getCalender():getTimeInMillis()	game clock in minutes, s
 java-call	IsoGridSquare:getFloor() / IsoObject:hasProperty(IsoFlagType.water)	same water test as ISWorldObjectContextMenu.lua:688
 java-call	getTextManager():MeasureStringX / getFontHeight, getPlayerScreenLeft/Top
 java-call	addAreaHighlightForPlayer(playerNum, x1, y1, x2, y2, z, r, g, b, a)	ground border, called every frame from the window render like FireBrushUI.lua:152 (x2/y2 exclusive)
+java-call	getGameTime():getTimeOfDay()	hour of day as a float, same as getTimeParams
+java-call	GameTime:setTimeOfDay(h)	test only
 java-call	FishSchoolManager:catchFish(x, y)	test only
 
 data	zone type "Fishing"	FishSchoolManager.getOrCreateFishingZone
 assume	zone name = fish caught in the area	FishSchoolManager.catchFish: name +1 and LastActionTimestamp = now per catch; getNumberOfFishInPoint subtracts it from every fish point
 assume	area is 40x40 centred on the first catch	FishSchoolManager.getOrCreateFishingZone (registerZone x-20, y-20, 40, 40)
 assume	restock after 7200 game minutes without a catch	FishSchoolManager.updateFishingData: name -> "0" when now > LastActionTimestamp + 7200, only for zones in zoneCache (cleared daily by updateSeed). RESET_MINUTES in FishingSpotInfo.lua
+assume	bonus hours 04:00-06:59 and 18:00-20:59	FishingUtils.lua:237 getTimeParams (Bobber.lua:102 getNibbleTime has the same test inline). BONUS_TIMES in FishingSpotInfo.lua and the TimeHours text; the x value shown comes from getTimeParams
 assume	fish points move every day	FishingUtils.lua:273 EveryDays -> updateSeed. Only shown as a note

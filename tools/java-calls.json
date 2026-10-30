@@ -2,7 +2,7 @@
   "FishSchoolManager": ["getInstance", "getFishAbundance", "catchFish"],
   "IsoMetaGrid": ["getZonesAt"],
   "Zone": ["getType", "getName", "getX", "getY", "getWidth", "getHeight", "getLastActionTimestamp", "setLastActionTimestamp"],
-  "GameTime": ["getCalender"],
+  "GameTime": ["getCalender", "getTimeOfDay", "setTimeOfDay"],
   "PZCalendar": ["getTimeInMillis"],
   "IsoGridSquare": ["getFloor"],
   "IsoObject": ["hasProperty"]
