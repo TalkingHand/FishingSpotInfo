@@ -1,9 +1,78 @@
 {
-  "FishSchoolManager": ["getInstance", "getFishAbundance", "catchFish"],
-  "IsoMetaGrid": ["getZonesAt"],
-  "Zone": ["getType", "getName", "getX", "getY", "getWidth", "getHeight", "getLastActionTimestamp", "setLastActionTimestamp"],
-  "GameTime": ["getCalender", "getTimeOfDay", "setTimeOfDay"],
-  "PZCalendar": ["getTimeInMillis"],
-  "IsoGridSquare": ["getFloor"],
-  "IsoObject": ["hasProperty"]
+  "FishSchoolManager": [
+    "getInstance",
+    "getFishAbundance",
+    "catchFish"
+  ],
+  "IsoMetaGrid": [
+    "getZonesAt"
+  ],
+  "Zone": [
+    "getType",
+    "getName",
+    "getX",
+    "getY",
+    "getWidth",
+    "getHeight",
+    "getLastActionTimestamp",
+    "setLastActionTimestamp"
+  ],
+  "GameTime": [
+    "getCalender",
+    "getTimeOfDay",
+    "setTimeOfDay"
+  ],
+  "PZCalendar": [
+    "getTimeInMillis"
+  ],
+  "IsoGridSquare": [
+    "getFloor",
+    "isFree"
+  ],
+  "IsoObject": [
+    "hasProperty"
+  ],
+  "IsoPlayer": [
+    "isAiming",
+    "getPrimaryHandItem",
+    "getJoypadBind",
+    "getPlayerNum",
+    "getUsername",
+    "isDead",
+    "getX",
+    "getY",
+    "setPrimaryHandItem",
+    "setSecondaryHandItem",
+    "setGodMod",
+    "isGodMod",
+    "setInvisible",
+    "isInvisible",
+    "setZombiesDontAttack",
+    "getPerkLevel",
+    "setPerkLevelDebug",
+    "setGhostMode",
+    "isGhostMode",
+    "isZombiesDontAttack"
+  ],
+  "InventoryItem": [
+    "hasTag",
+    "getModData"
+  ],
+  "IsoUtils": [
+    "DistanceTo"
+  ],
+  "GlobalObject": [
+    "isoToScreenX",
+    "isoToScreenY",
+    "getMouseX",
+    "getMouseY",
+    "getPlayerScreenLeft",
+    "getPlayerScreenTop",
+    "getPlayerScreenWidth",
+    "getPlayerScreenHeight",
+    "addAreaHighlightForPlayer",
+    "getNumActivePlayers",
+    "getSpecificPlayer",
+    "isMultiplayer"
+  ]
 }

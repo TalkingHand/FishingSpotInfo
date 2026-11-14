@@ -1,8 +1,8 @@
 name=Fishing Spot Info
 id=FishingSpotInfo
-description=Right-click water to see how many fish are there, how many were caught in that area, when it restocks, and the dawn/dusk bite bonus. Read only.
+description=Aim your fishing rod (Ctrl): the bobber tile is coloured by how well fish bite there (more tiles around it at higher Fishing levels), and a box next to the cursor shows the fish number, bite chance and its factors, the area catch count and restock time, and the dawn/dusk bonus. Read only.
 poster=poster.png
 author=TalkingHand
 url=https://github.com/TalkingHand/FishingSpotInfo
-modversion=1.1.0
+modversion=1.2.0
 versionMin=42.0

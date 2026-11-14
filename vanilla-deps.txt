@@ -1,27 +1,39 @@
 # FishingSpotInfo: vanilla dependencies (format: _guide/README.md "바닐라 의존 목록")
-# checked: 42.21.0 (pzt run + real-click test, 2026-10-30; time-of-day lines pzt run 2026-10-31)
+# checked: 42.22.2 (uitest.sh: pzt live + real Ctrl aim + level steps, 2026-11-14, 45 PASS)
 #
 # kind	target	note
 
 lua-call	Fishing.Utils.getFishNumParams(x, y)	shared/Fishing/FishingUtils.lua:255. Fish number and its bite multiplier (0 -> 0.1, <10 -> 0.5, <=25 -> 1.0, else 1.5)
-lua-call	Fishing.Utils.getTimeParams()	shared/Fishing/FishingUtils.lua:234. Time-of-day bite multiplier now (x1.2 at hours 4-6 and 18-20, else 1)
-lua-call	ISPanel / ISButton	window
-event	Events.OnFillWorldObjectContextMenu	adds the menu option on water
+lua-call	Fishing.Utils.getTimeParams() / getTemperatureParams(player) / getWeatherParams() / getHookParams(hookType)	FishingUtils.lua. The factors of the bite chance
+lua-call	Fishing.Utils.getAimCoords(player)	FishingUtils.lua:12. Where the bobber is aimed (FishingRod:getSpawnBobberCoords adds a small random offset to it); the mouse point 100 zoomed pixels lower, or 6 tiles ahead on a gamepad
+lua-call	Fishing.Utils.isNearShore(x, y)	FishingUtils.lua. Tries are 2x slower near the shore (Bobber:update)
+lua-call	Fishing.isNoFishZone(x, y)	FishingZones.lua
+lua-call	Fishing.ManagerInstances[playerNum or username].state / .states["None"|"Idle"]	client/Fishing/FishingHandler.lua, FishingManager.lua. The box shows only before the cast
+lua-call	Fishing.Bobber.getNibbleTime(fake bobber)	test only: compares the mod's copy (FishingSpotInfo.nibbleTime)
+lua-call	Fishing.Handler.handleFishing(player, item)	test only: starts the fishing manager after equipping a rod
+lua-call	ISUIElement	the box
+java-call	IsoPlayer:getPerkLevel(Perks.Fishing)	how many tiles around the aimed one are coloured (AREA_STEPS)
+java-call	IsoPlayer:setPerkLevelDebug(Perks.Fishing, n)	test only
+event	Events.OnPreUIDraw	shows, moves or hides the box every frame
 
 java-call	FishSchoolManager.getInstance():getFishAbundance(x, y)	through getFishNumParams
 java-call	getWorld():getMetaGrid():getZonesAt(x, y, 0)	finds the "Fishing" zone
 java-call	Zone:getType() / getName() / getX() / getY() / getWidth() / getHeight() / getLastActionTimestamp()
 java-call	getGameTime():getCalender():getTimeInMillis()	game clock in minutes, same as FishSchoolManager.getCurrentGameTimeInMinutes
 java-call	IsoGridSquare:getFloor() / IsoObject:hasProperty(IsoFlagType.water)	same water test as ISWorldObjectContextMenu.lua:688
-java-call	getTextManager():MeasureStringX / getFontHeight, getPlayerScreenLeft/Top
-java-call	addAreaHighlightForPlayer(playerNum, x1, y1, x2, y2, z, r, g, b, a)	ground border, called every frame from the window render like FireBrushUI.lua:152 (x2/y2 exclusive)
+java-call	IsoPlayer:isAiming() / getPrimaryHandItem() / getJoypadBind() / isDead(); InventoryItem:hasTag(ItemTag.FISHING_ROD) / getModData().fishing_HookType	same tests as Fishing.States.None / Bobber:attractFish
+java-call	getMouseX/Y, isoToScreenX/Y, getPlayerScreenLeft/Top/Width/Height, getTextManager():MeasureStringX / getFontHeight	box placement
+java-call	addAreaHighlightForPlayer(playerNum, x1, y1, x2, y2, z, r, g, b, a)	aimed tile and fished-area border, called every frame from the box render like FireBrushUI.lua:152 (x2/y2 exclusive)
 java-call	getGameTime():getTimeOfDay()	hour of day as a float, same as getTimeParams
 java-call	GameTime:setTimeOfDay(h)	test only
 java-call	FishSchoolManager:catchFish(x, y)	test only
 
 data	zone type "Fishing"	FishSchoolManager.getOrCreateFishingZone
+data	Fishing.hook[hookType]	fishing_properties.lua:678, through getHookParams
+assume	bite chance per try = 0.8 x temperature x weather x time x hook x fish	Bobber:attractFish (Bobber.lua:222)
+assume	wait between tries	Bobber:getNibbleTime buckets (2000/1500/1000/650/500 by fish x temperature x weather x time x 100, fish 0 counts as 0) copied as FishingSpotInfo.nibbleTime; Bobber:update x0.8, x2 near the shore, x3 closer than 3 tiles. The test compares the copy with vanilla at every hour
+assume	casts only under 16 tiles	Fishing.Utils.isAccessibleAimDist. MAX_CAST_DIST in FishingSpotInfo.lua
 assume	zone name = fish caught in the area	FishSchoolManager.catchFish: name +1 and LastActionTimestamp = now per catch; getNumberOfFishInPoint subtracts it from every fish point
 assume	area is 40x40 centred on the first catch	FishSchoolManager.getOrCreateFishingZone (registerZone x-20, y-20, 40, 40)
 assume	restock after 7200 game minutes without a catch	FishSchoolManager.updateFishingData: name -> "0" when now > LastActionTimestamp + 7200, only for zones in zoneCache (cleared daily by updateSeed). RESET_MINUTES in FishingSpotInfo.lua
-assume	bonus hours 04:00-06:59 and 18:00-20:59	FishingUtils.lua:237 getTimeParams (Bobber.lua:102 getNibbleTime has the same test inline). BONUS_TIMES in FishingSpotInfo.lua and the TimeHours text; the x value shown comes from getTimeParams
-assume	fish points move every day	FishingUtils.lua:273 EveryDays -> updateSeed. Only shown as a note
+assume	bonus hours 04:00-06:59 and 18:00-20:59	FishingUtils.lua:237 getTimeParams. BONUS_TIMES in FishingSpotInfo.lua and the TimeNormal text

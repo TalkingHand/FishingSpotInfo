@@ -1,10 +1,12 @@
 # Real mouse clicks for the in-game test (tests/tools/uitest.sh starts this next to `pzt run`).
-# The test Lua writes Zomboid/Lua/fsi_click_req.txt = "<id> <left|right> <x> <y> <screenW> <screenH>"
+# The test Lua writes Zomboid/Lua/fsi_click_req.txt = "<id> <left|right|aim|release> <x> <y> <screenW> <screenH>"
+# ("aim" moves the cursor there and holds left Ctrl, the Aim key, until "release")
 # (pixels in getCore():getScreenWidth/Height space, scaled to the window client size); this clicks there
 # with the real mouse (the cursor moves, then goes back) and
 # writes fsi_click_done.txt = "<id> <ok|error text>". Only the test game of this project is
 # touched: the ProjectZomboid64.exe whose command line has this project's -cachedir.
-# Exits when that game is gone (after it was seen) or after $TimeoutSec.
+# Exits when that game is gone (after it was seen), $TimeoutSec after the game appeared, or when
+# uitest.sh stops it after `pzt live` returns.
 param([string]$EnvDir, [int]$TimeoutSec = 900)
 
 Add-Type @"
@@ -47,6 +49,8 @@ $seen = $false
 $lastId = ""
 while (((Get-Date) - $start).TotalSeconds -lt $TimeoutSec) {
     $game = Find-Game
+    # the timeout counts from the game start: pzt may first wait for the machine-wide lock
+    if ($game -and -not $seen) { $start = Get-Date }
     if ($game) { $seen = $true } elseif ($seen) { break }
     if ($game -and (Test-Path $req)) {
         $line = (Get-Content $req -TotalCount 1 -ErrorAction SilentlyContinue)
@@ -77,8 +81,22 @@ while (((Get-Date) - $start).TotalSeconds -lt $TimeoutSec) {
                     $p = New-Object FsiInput+POINT
                     $p.X = [int]([double]$parts[2] * $sx); $p.Y = [int]([double]$parts[3] * $sy)
                     [void][FsiInput]::ClientToScreen($hwnd, [ref]$p)
+                    if ($parts[1] -eq "release") {
+                        # end of an "aim": let go of Ctrl, cursor back
+                        [FsiInput]::keybd_event(0xA2, 0x1D, 2, [UIntPtr]::Zero)
+                        $script:aiming = $false
+                        if ($script:aimOld) { [void][FsiInput]::SetCursorPos($script:aimOld.X, $script:aimOld.Y) }
+                        throw "released"
+                    }
                     [void][FsiInput]::SetCursorPos($p.X, $p.Y)
                     Start-Sleep -Milliseconds 300
+                    if ($parts[1] -eq "aim") {
+                        # hold left Ctrl (the default Aim key) with the cursor here until "release"
+                        if (-not $script:aiming) { $script:aimOld = $old }
+                        [FsiInput]::keybd_event(0xA2, 0x1D, 0, [UIntPtr]::Zero)
+                        $script:aiming = $true
+                        throw "aiming"
+                    }
                     if ($parts[1] -eq "right") { $down = 0x0008; $up = 0x0010 } else { $down = 0x0002; $up = 0x0004 }
                     [FsiInput]::mouse_event($down, 0, 0, 0, [UIntPtr]::Zero)
                     Start-Sleep -Milliseconds 80
@@ -87,7 +105,9 @@ while (((Get-Date) - $start).TotalSeconds -lt $TimeoutSec) {
                     [void][FsiInput]::SetCursorPos($old.X, $old.Y)
                     $result = "ok screen $($p.X),$($p.Y) scale $sx"
                 } catch {
-                    $result = "error $($_.Exception.Message)"
+                    $msg = $_.Exception.Message
+                    if ($msg -eq "aiming" -or $msg -eq "released") { $result = "ok $msg screen $($p.X),$($p.Y)" }
+                    else { $result = "error $msg" }
                 }
                 Set-Content -Path $done -Value "$lastId $result" -Encoding ascii
                 Write-Output "[clicker] $line -> $result"
@@ -96,4 +116,6 @@ while (((Get-Date) - $start).TotalSeconds -lt $TimeoutSec) {
     }
     Start-Sleep -Milliseconds 200
 }
+# never leave Ctrl held down
+if ($script:aiming) { [FsiInput]::keybd_event(0xA2, 0x1D, 2, [UIntPtr]::Zero) }
 Write-Output "[clicker] exit"
